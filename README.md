@@ -36,7 +36,7 @@ src/main/java/com/focused/
     └── AppConfig.java
 ```
 
-**Rule:** `core/` never imports from `platform/` or `ui/`. The ogic is always testable in isolation.
+**Rule from John Ousterhout:** `core/` imports from `platform/` or `ui/`. Each componnent is testable in isolation.
 
 ---
 
