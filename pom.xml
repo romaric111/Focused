@@ -6,12 +6,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-        Project identity.
-        groupId    : reverse domain — uniquely identifies you as the author
-        artifactId : the project name, matches your GitHub repo
-        version    : v1, v2, v3 as we discussed
-    -->
     <groupId>com.focused</groupId>
     <artifactId>focused</artifactId>
     <version>v1</version>
@@ -19,7 +13,7 @@
 
     <name>Focused</name>
     <description>A Windows focus app that locks you to one window at a time.</description>
-    <url>https://github.com/YOUR_USERNAME/focused</url>
+    <url>https://github.com/romaric111/Focused.git</url>
 
     <licenses>
         <license>
@@ -32,7 +26,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Centralised version numbers — change once, applies everywhere -->
+
         <javafx.version>21.0.2</javafx.version>
         <jna.version>5.14.0</jna.version>
     </properties>

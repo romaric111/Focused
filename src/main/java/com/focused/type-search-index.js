@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.focused.core","l":"Session"},{"p":"com.focused.core","l":"Session.State"}];updateSearchResults();

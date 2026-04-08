@@ -1,63 +1,49 @@
 package com.focused.core;
 
 /**
- * Represents a single focus session.
- *
- * This is the heart of the app — pure logic, zero dependencies on
- * JavaFX, JNA, or Windows. It can be tested without running the app.
- *
+ * Manage the user focus session.
  * A Session knows:
  *   - which window the user wants to focus on
  *   - how long the session lasts
- *   - what state it's in (IDLE, ACTIVE, DONE)
- *
- * A Session does NOT know:
- *   - how to minimize windows (that's WindowManager)
- *   - how to draw anything (that's MainView)
- *   - how to save anything (that's AppConfig)
- *
- * Adding a feature? Ask: does this belong in the domain (here),
- * the OS layer (platform/), the UI (ui/), or persistence (config/)?
+ *   - The state is in (IDLE, ACTIVE, DONE)
  */
 public class Session {
-
-    // ── State ─────────────────────────────────────────────────────────────────
-
     public enum State {
-        IDLE,    // not started
-        ACTIVE,  // timer running, window locked
-        DONE     // timer finished naturally
+        IDLE,
+        ACTIVE,
+        DONE
     }
 
-    // ── Fields ────────────────────────────────────────────────────────────────
 
-    private final String targetWindow;   // title of the window to lock to
-    private final int    durationSeconds;// total duration of this session
+    private final String targetWindow;
+    private final int    durationSeconds;
     private State        state;
     private int          secondsLeft;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
+    private final String  keyword;
 
     /**
      * @param targetWindow   the window title to lock the user to
      * @param durationSeconds how long the session should run
+     * @param keyword
      */
-    public Session(String targetWindow, int durationSeconds) {
+    public Session(String targetWindow, String keyword,int durationSeconds) {
         if (targetWindow == null || targetWindow.isBlank()) {
             throw new IllegalArgumentException("targetWindow cannot be blank");
         }
         if (durationSeconds <= 0) {
             throw new IllegalArgumentException("durationSeconds must be positive");
         }
+        if (keyword==null || keyword.isBlank()){
+            throw new IllegalArgumentException("keyword can't be be null or blank");
+        }
         this.targetWindow    = targetWindow;
         this.durationSeconds = durationSeconds;
         this.secondsLeft     = durationSeconds;
         this.state           = State.IDLE;
+        this.keyword         = keyword.toLowerCase();
     }
 
-    // ── State transitions ─────────────────────────────────────────────────────
-
-    /** Move from IDLE → ACTIVE. Throws if already active. */
+    // ── State transitions
     public void start() {
         if (state != State.IDLE) {
             throw new IllegalStateException("Session already started");
@@ -79,11 +65,15 @@ public class Session {
         return false;
     }
 
-    /** Force-stop the session before the timer runs out. */
     public void stop() {
         if (state == State.ACTIVE) {
             state = State.DONE;
         }
+    }
+    //Matches method
+    public boolean matches(String windowTitle){
+        if (windowTitle==null) return false;
+        return windowTitle.toLowerCase().contains(keyword);
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────
