@@ -10,17 +10,6 @@ Focused is a Windows productivity app that locks your desktop to a single chosen
 
 ---
 
-## Status
-
- **In active development**
-
-| 1 | Project skeleton, architecture, GitHub setup | Done |
-| 2 | Window detection & locking (Windows API) |  Next |
-| 3 | Session timer & state machine |  Planned |
-| 4 | JavaFX UI |  Planned |
-
----
-
 ## Architecture
 
 ```
