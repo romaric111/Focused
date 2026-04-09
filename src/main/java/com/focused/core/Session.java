@@ -43,7 +43,7 @@ public class Session {
         this.keyword         = keyword.toLowerCase();
     }
 
-    // ── State transitions
+    //State transitions
     public void start() {
         if (state != State.IDLE) {
             throw new IllegalStateException("Session already started");
@@ -76,7 +76,7 @@ public class Session {
         return windowTitle.toLowerCase().contains(keyword);
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
+    //Getters
 
     public String getTargetWindow()    { return targetWindow; }
     public int    getDurationSeconds() { return durationSeconds; }

@@ -1,30 +1,47 @@
 package com.focused.platform;
 
 import com.focused.core.Session;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIOptions;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
+import java.util.ArrayList;
 
 /**
- * WindowManager — the only class allowed to talk to the Windows OS.
- *
- * All JNA / Win32 API code lives here and ONLY here.
- * The rest of the app calls this class; it never calls user32.dll directly.
- *
- * Why this matters:
- *   If we ever support macOS or Linux, we swap this one class.
- *   Nothing else changes.
- *
- * Session 2 will implement these methods.
- * For now they are stubs so the project compiles cleanly.
+ * WindowManager will interact with windows.
  */
 public class WindowManager {
+    interface User32 extends StdCallLibrary{
+        User32 INSTANCE = Native.load("user32", User32.class, W32APIOptions.DEFAULT_OPTIONS);
 
-    // ── Window info ───────────────────────────────────────────────────────────
+        interface WNDENUMPROC extends StdCallLibrary.StdCallCallback{
+            boolean callback(HWND hwnd, Pointer data);
+        }
+       boolean EnumWindows(WNDENUMPROC lpEnumFunc, Pointer lParam);
+       boolean IsWindowVisible(HWND hwnd);
+       int GetWindowTextW(HWND hwnd, char[] lpString, int nMaxCount);
+       int GetWindowTextLengthW(HWND hwnd);
+       boolean ShowWindow(HWND hwnd, int nCmdShow);
+       boolean SetForegroundWindow(HWND hwnd);
+       int GetWindowLongW(HWND hwnd, int nIndex);
+       int GetWindowThreadProcessId(HWND hwnd, IntByReference lpdwProcessId);
 
-    /**
-     * A lightweight snapshot of a visible window.
-     * Immutable — we never mutate window state through this object.
-     */
+       int SW_MINIMIZE      = 6;
+       int SW_RESTORE       = 9;
+       int GWWL_EXSTYLE     = -20;
+       int WS_EX_TOOLWINDOW = 0x00000080;
+    }
+
+
+     // We take the windows info
+    //A snapshot of a visible window.
     public record WindowInfo(String title, long hwnd) {
         @Override public String toString() { return title; }
     }
@@ -34,8 +51,6 @@ public class WindowManager {
     /**
      * Returns all visible, user-facing windows currently open.
      * Excludes tool windows, our own process, and the console that launched us.
-     *
-     * TODO: implement in Session 2.
      */
     public List<WindowInfo> getVisibleWindows() {
         throw new UnsupportedOperationException("Implement in Session 2");
