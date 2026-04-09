@@ -8,7 +8,9 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * WindowManager will interact with windows.
@@ -85,32 +87,23 @@ public class WindowManager {
 
     }
 
-
-
-
-
-
-
-    /**
-     * Enforces the lock for the given session:
-     *   - minimizes every window whose title does NOT match session.getTargetWindow()
-     *   - brings the target window to the front
-     *
-     * Called once per second while a session is ACTIVE.
-     *
-     * TODO: implement in Session 2.
-     */
+    //Minimise every screen outside of the screen chosen
     public void enforceLock(Session session) {
-        throw new UnsupportedOperationException("Implement in Session 2");
+        for (WindowInfo w: getVisibleWindows()){
+            if(session.matches(w.title())){
+                User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_RESTORE);
+                User32.INSTANCE.SetForegroundWindow(w.hwnd());
+            }else{
+                User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_MINIMIZE);
+            }
+        }
+
     }
 
-    /**
-     * Restores all windows to their normal state.
-     * Called when a session ends (naturally or force-stopped).
-     *
-     * TODO: implement in Session 2.
-     */
+    //At the done state all windows are released
     public void releaseAll() {
-        throw new UnsupportedOperationException("Implement in Session 2");
+        for(WindowInfo w:getVisibleWindows()){
+            User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_RESTORE);
+        }
     }
 }
