@@ -1,5 +1,7 @@
 package com.focused.ui;
 
+import com.focused.config.AppConfig;
+import com.focused.core.SessionContrroller;
 import javafx.stage.Stage;
 
 /**
@@ -14,11 +16,14 @@ import javafx.stage.Stage;
 public class MainView {
 
     private final Stage stage;
+    private final SessionContrroller controller;
+    private final AppConfig config;
 
-    public MainView(Stage stage) {
-        this.stage = stage;
+    public MainView(Stage stage, SessionContrroller controller, AppConfig config) {
+        this.stage      = stage;
+        this.controller = controller;
+        this.config     = config;
     }
-
     /**
      * Builds and shows the main window.
      * Session 4 will implement this.
