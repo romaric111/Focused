@@ -109,7 +109,28 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.5</version>
+                <configuration>
+                    <name>Focused</name>
+                    <appVersion>1.0</appVersion>
+                    <vendor>Romaric</vendor>
+                    <destination>target/dist</destination>
+                    <module>com.focused/com.focused.Main</module>
+                    <runtimeImage>target/runtime</runtimeImage>
+                    <winDirChooser>true</winDirChooser>
+                    <winShortcut>true</winShortcut>
+                    <winMenu>true</winMenu>
+                    <input>target</input>
+                    <mainJar>focused.jar</mainJar>
+                    <type>EXE</type>
+                </configuration>
+            </plugin>
+
         </plugins>
+
     </build>
 
 </project>
