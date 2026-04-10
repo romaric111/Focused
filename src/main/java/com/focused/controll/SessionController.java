@@ -1,10 +1,9 @@
-package com.focused.core;
+package com.focused.controll;
 
-
+import com.focused.core.Session;
 import com.focused.platform.WindowManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
 
@@ -23,11 +22,6 @@ import javafx.util.Duration;
  * JavaFX Application Thread  →  Timeline fires tick()
  *                            →  submits Task to background thread
  * Background Thread          →  calls WindowManager.enforceLock() (Win32)
- *                            →  Platform.runLater() to post UI updates back
- *
- * This follows the JavaFX concurrency guidelines:
- * https://docs.oracle.com/javase/8/javafx/interoperability-tutorial/concurrency.htm
- *
  * ── Why callbacks instead of direct View references? ──────────────────────────
  *
  * The controller does not import anything from com.focused.ui.
@@ -38,35 +32,18 @@ import javafx.util.Duration;
  *   View → Controller → Platform
  *
  * The controller never knows what the View looks like. This makes it
- * testable and replaceable.
+ * testable and replaceable. And allow my app to not have a circular depency chain
  */
-public class SessionContrroller {
-
-    // ── Dependencies ──────────────────────────────────────────────────────────
-
-    private final WindowManager windowManager;
-
-    // ── State ─────────────────────────────────────────────────────────────────
-
-    private Session  currentSession;
+public class SessionController {
+    private final WindowManager windowManager; // Dependency Injection
+    private Session currentSession;
     private Timeline heartbeat;
 
-    // ── Callbacks (set by the View before starting) ───────────────────────────
+    // Callbacks (set by the View before starting)
+    private java.util.function.Consumer<Session> onTick; // call javaFx Thread every thread
+    private Runnable onDone; // call javaFx Thread when session finish
 
-    /**
-     * Called every second on the FX thread with the updated session.
-     * The View uses this to refresh the countdown label and progress ring.
-     */
-    private java.util.function.Consumer<Session> onTick;
-
-    /**
-     * Called on the FX thread when the session finishes (naturally or stopped).
-     */
-    private Runnable onDone;
-
-    // ── Constructor ───────────────────────────────────────────────────────────
-
-    public SessionContrroller(WindowManager windowManager) {
+    public SessionController(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
 
@@ -249,3 +226,4 @@ public class SessionContrroller {
         thread.start();
     }
 }
+

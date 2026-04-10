@@ -1,7 +1,7 @@
 package com.focused.ui;
 
 import com.focused.config.AppConfig;
-import com.focused.core.SessionContrroller;
+import com.focused.controll.SessionController;
 import javafx.stage.Stage;
 
 /**
@@ -16,10 +16,10 @@ import javafx.stage.Stage;
 public class MainView {
 
     private final Stage stage;
-    private final SessionContrroller controller;
+    private final SessionController controller;
     private final AppConfig config;
 
-    public MainView(Stage stage, SessionContrroller controller, AppConfig config) {
+    public MainView(Stage stage, SessionController controller, AppConfig config) {
         this.stage      = stage;
         this.controller = controller;
         this.config     = config;
