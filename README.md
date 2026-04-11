@@ -14,15 +14,17 @@ Focused is a Windows productivity app that locks your desktop to a single chosen
 
 ```
 src/main/java/com/focused/
-├── Main.java           Entry point only — starts JavaFX
-├── core/               Pure logic — no OS, no UI dependencies
-│   └── Session.java    Domain model for a focus session
-├── platform/           All Windows API 
-│   └── WindowManager.java
-├── ui/                 All JavaFX code 
-│   └── MainView.java
-└── config/             Settings and persistence
-    └── AppConfig.java
+├── Main.java           
+├── core/               
+│   └── Session.java    //model for a focus session
+├── controll/
+|    └── SessionController.java //controller
+├── platform/       
+│   └── WindowManager.java //model for the communication with Win32.dll API
+├── ui/                 
+│   └── MainView.java // view using JavaFX
+└── config/             
+    └── AppConfig.java // Settings
 ```
 
 **Rule from John Ousterhout:** `core/` imports from `platform/` or `ui/`. Each componnent is testable in isolation.
