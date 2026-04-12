@@ -28,10 +28,10 @@ import java.util.Objects;
 /**
  * MainView — owns the entire JavaFX scene graph.
  *
- * Design decisions made here:
+ * Design decisions made:
  *
- * 1. UNDECORATED stage — we draw our own title bar and close button.
- *    This gives us a borderless modern window. Drag-to-move is implemented
+ * 1. UNDECORATED stage — i draw mmy own title bar and close button.
+ *    This gives a borderless modern window. Drag-to-move is implemented
  *    manually via mouse event handlers on the title bar region.
  *
  * 2. CSS stylesheet — all visual styling is in styles.css (resources/).
@@ -53,17 +53,19 @@ import java.util.Objects;
  */
 public class MainView {
 
-    // ── Dependencies ──────────────────────────────────────────────────────────
+    // Dependencies
 
     private final Stage             stage;
     private final SessionController controller;
     private final AppConfig         config;
     private final WindowManager     windowManager;
 
-    // ── UI state fields ───────────────────────────────────────────────────────
-    // Only the nodes we need to read or update after initial construction.
-    // Nodes that are write-once (built and never touched again) stay local
-    // to the build method that creates them.
+    // UI state fields
+
+    /**
+     * Only the nodes we need to read or update after initial construction.
+     *Nodes that are write-once (built and never touched again) stay local
+    to the build method that creates them.*/
 
     private ListView<String> windowList;
     private TextField        keywordField;
@@ -76,10 +78,12 @@ public class MainView {
     private VBox             idleView;
     private VBox             activeView;
 
-    // ── Drag support ──────────────────────────────────────────────────────────
-    // We track the mouse offset from the window's top-left corner
-    // so the window moves relative to where the user grabbed it,
-    // not jumping to center the window on the cursor.
+    // Drag support
+    /**
+     * We track the mouse offset from the window's top-left corner
+     * so the window moves relative to where the user grabbed it,
+     * not jumping to center the window on the cursor.
+     * */
 
     private double dragOffsetX;
     private double dragOffsetY;
@@ -94,7 +98,7 @@ public class MainView {
         this.windowManager = windowManager;
     }
 
-    // ── Public entry point ────────────────────────────────────────────────────
+    // Public entry point
 
     /**
      * Called once from Main.start(). Builds everything and shows the window.
@@ -102,7 +106,6 @@ public class MainView {
      * Order matters:
      *   1. Stage style must be set BEFORE the scene is set.
      *      After show() is called, initStyle() throws IllegalStateException.
-     *      Reference: https://docs.oracle.com/javase/8/javafx/api/javafx/stage/Stage.html#initStyle
      *   2. Callbacks must be registered before any session can start.
      *   3. Window list is populated last — it's the most expensive operation.
      */
@@ -119,7 +122,7 @@ public class MainView {
         stage.show();
     }
 
-    // ── Scene construction ────────────────────────────────────────────────────
+    // Scene construction
 
     private void buildScene() {
         idleView   = buildIdleView();
@@ -127,7 +130,7 @@ public class MainView {
         activeView.setVisible(false);
 
         // StackPane layers children — last child is on top.
-        // Both views exist simultaneously; only one is visible.
+        // Both views exist simultaneously; only one is visible at a time.
         StackPane root = new StackPane(idleView, activeView);
 
         Scene scene = new Scene(root, 400, 500);
@@ -146,7 +149,7 @@ public class MainView {
         stage.setScene(scene);
     }
 
-    // ── Idle view ─────────────────────────────────────────────────────────────
+    // Idle view
 
     private VBox buildIdleView() {
         VBox view = new VBox(14);
@@ -193,7 +196,7 @@ public class MainView {
         bar.setAlignment(Pos.CENTER_LEFT);
         bar.getStyleClass().add("title-bar");
 
-        // ── Drag to move ──────────────────────────────────────────────────────
+        // Drag to move
         // onMousePressed: record where inside the title bar the user clicked.
         // onMouseDragged: move the stage so that point stays under the cursor.
         //
@@ -215,7 +218,7 @@ public class MainView {
     }
 
     private VBox buildWindowSection() {
-        Label label = new Label("My open windows");
+        Label label = new Label("My opened windows");
         label.getStyleClass().add("section-label");
 
         windowList = new ListView<>();
@@ -316,7 +319,7 @@ public class MainView {
         return btn;
     }
 
-    // ── Active view ───────────────────────────────────────────────────────────
+    // Active view
 
     /**
      * The active view shown during a session.
@@ -409,7 +412,7 @@ public class MainView {
         return pane;
     }
 
-    // ── Controller callbacks ──────────────────────────────────────────────────
+    // Controller callbacks
 
     /**
      * Registers callbacks with the controller.
@@ -442,7 +445,7 @@ public class MainView {
         });
     }
 
-    // ── User action handlers ──────────────────────────────────────────────────
+    // User action handlers
 
     /**
      * Validates inputs and starts the session.
@@ -516,7 +519,7 @@ public class MainView {
         idleView.setVisible(true);
     }
 
-    // ── System tray ───────────────────────────────────────────────────────────
+    // System tray
 
     /**
      * Sets up a system tray icon so the user can interact with Focused
@@ -590,7 +593,7 @@ public class MainView {
         }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // Helpers
 
     /**
      * Populates the window list from the OS.
@@ -600,8 +603,8 @@ public class MainView {
      *   1. It's a read-only OS query, not a session operation.
      *   2. The controller's responsibility is session lifecycle, not
      *      window enumeration for UI display purposes.
-     * In a larger app, you'd add a dedicated query method on the controller.
-     * For our scope, direct access is the pragmatic choice.
+     * In a larger app, I'd will add a dedicated query method on the controller.
+     * For the scope, direct access is the pragmatic choice.
      *
      * Future improvement: run this on a background thread and populate
      * the list via Platform.runLater() to avoid any startup jank.
