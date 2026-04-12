@@ -26,9 +26,6 @@ src/main/java/com/focused/
 └── config/             
     └── AppConfig.java // Settings
 ```
-
-**Rule from John Ousterhout:** `core/` imports from `platform/` or `ui/`. Each componnent is testable in isolation.
-
 ---
 
 ## Requirements
