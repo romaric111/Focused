@@ -6,12 +6,7 @@ import javafx.stage.Stage;
 
 /**
  * MainView — owns the entire JavaFX UI.
- *
- * Only this class (and classes in the ui/ package) are allowed
- * to import JavaFX. The core and platform layers never touch the UI.
- *
- * Session 4 will implement the full interface.
- * For now this stub compiles and holds the correct structure.
+ * No other class need access
  */
 public class MainView {
 
@@ -29,7 +24,7 @@ public class MainView {
      * Session 4 will implement this.
      */
     public void show() {
-        // TODO: implement in Session 4
+        // TODO: soon
         stage.setTitle("Focused");
         stage.show();
     }
