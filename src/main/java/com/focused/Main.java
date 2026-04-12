@@ -20,7 +20,7 @@ public class Main extends Application {
         SessionController  controller    = new SessionController(windowManager);
 
         // 3. View last — depends on everything
-        MainView view = new MainView(primaryStage, controller, config);
+        MainView view = new MainView(primaryStage, controller, config, windowManager);
         view.show();
 
     }
