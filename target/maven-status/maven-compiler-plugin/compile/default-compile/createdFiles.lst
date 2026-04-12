@@ -1,7 +1,12 @@
 com\focused\ui\MainView.class
-com\focused\core\Session.class
 com\focused\platform\WindowManager.class
 com\focused\config\AppConfig.class
+com\focused\platform\WindowManager$User32$WNDENUMPROC.class
+com\focused\platform\WindowManager$WindowInfo.class
+com\focused\controll\SessionController.class
+com\focused\controll\SessionController$2.class
+com\focused\core\Session.class
+com\focused\platform\WindowManager$User32.class
 com\focused\core\Session$State.class
 com\focused\Main.class
-com\focused\platform\WindowManager$WindowInfo.class
+com\focused\controll\SessionController$1.class

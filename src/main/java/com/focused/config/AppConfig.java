@@ -6,7 +6,6 @@ import java.util.Properties;
 
 /**
  * AppConfig — owns everything related to settings and persistence.
- *
  * Saves a simple .properties file next to the running JAR.
  * This is portable — the user can carry the folder anywhere.
  *
@@ -14,9 +13,6 @@ import java.util.Properties;
  *   - Never import JavaFX (config is not UI)
  *   - Never import JNA (config is not OS)
  *   - Only reads/writes to disk
- *
- * Session 3 will expand this as we need to persist settings.
- * For now it establishes the pattern.
  */
 public class AppConfig {
 
@@ -25,7 +21,7 @@ public class AppConfig {
     private final Path      configPath;
     private final Properties props;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
+    // ── Constructor
 
     public AppConfig() {
         // Resolve config file next to the running JAR (portable mode)
@@ -34,7 +30,7 @@ public class AppConfig {
         load();
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // ── Public
 
     public String get(String key, String defaultValue) {
         return props.getProperty(key, defaultValue);
@@ -62,7 +58,7 @@ public class AppConfig {
     public static final String KEY_LAST_WINDOW   = "last.window";
     public static final String KEY_LAST_DURATION = "last.duration.seconds";
 
-    // ── Internal ──────────────────────────────────────────────────────────────
+    // ── Internal
 
     private void load() {
         if (Files.exists(configPath)) {
