@@ -6,23 +6,24 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import java.util.function.Consumer;
 
 /**
  * SessionController — wires the Session model to the WindowManager platform layer.
  *
- * ── Responsibilities ──────────────────────────────────────────────────────────
+ * Responsibilities:
  *
  * 1. Own the JavaFX Timeline (the once-per-second heartbeat).
  * 2. On each tick: delegate enforcement to a background thread so the
  *    FX thread is never blocked by Win32 calls.
  * 3. Notify the UI via callbacks when state changes (started, ticked, done).
  *
- * ── Threading model ───────────────────────────────────────────────────────────
+ * Threading model :
  *
  * JavaFX Application Thread  →  Timeline fires tick()
  *                            →  submits Task to background thread
  * Background Thread          →  calls WindowManager.enforceLock() (Win32)
- * ── Why callbacks instead of direct View references? ──────────────────────────
+ * ── Why callbacks instead of direct View references?
  *
  * The controller does not import anything from com.focused.ui.
  * Instead it exposes Runnable callbacks that the View sets before starting
@@ -36,18 +37,19 @@ import javafx.util.Duration;
  */
 public class SessionController {
     private final WindowManager windowManager; // Dependency Injection
-    private Session currentSession;
-    private Timeline heartbeat;
+    private Session currentSession; //Runtime state
+    private Timeline heartbeat; //runtime state
 
-    // Callbacks (set by the View before starting)
-    private java.util.function.Consumer<Session> onTick; // call javaFx Thread every thread
-    private Runnable onDone; // call javaFx Thread when session finish
+    // Callbacks (set by the View before starting, So it can refresh after(snapshot))
+    private Consumer<Session> onTick; // call javaFx Thread every thread
+    private Runnable onDone; // call javaFx Thread when session finish the view use this to return to idle state
+
 
     public SessionController(WindowManager windowManager) {
         this.windowManager = windowManager;
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    //Public API
 
     /**
      * Register the tick callback. Called every second with the live session.
@@ -81,7 +83,6 @@ public class SessionController {
             throw new IllegalStateException(
                     "Cannot start a session while one is already active");
         }
-
         currentSession = new Session(targetWindow, keyword, seconds);
         currentSession.start();
 
@@ -129,7 +130,7 @@ public class SessionController {
         boolean done = currentSession.tick();
 
         // Notify the View to update the countdown/progress ring.
-        // We're already on the FX thread (Timeline fires here), so no
+        // safe cuz we on the FX thread (Timeline fires here), so no
         // Platform.runLater() needed.
         if (onTick != null) {
             onTick.accept(currentSession);
@@ -151,9 +152,6 @@ public class SessionController {
      * javafx.concurrent.Task is JavaFX's unit of background work.
      * It integrates with Platform.runLater() cleanly and handles
      * exceptions in a structured way.
-     *
-     * Reference: https://docs.oracle.com/javase/8/javafx/interoperability-tutorial/concurrency.htm
-     *
      * Why not ScheduledExecutorService?
      * We already have a Timeline driving the heartbeat. Using a second
      * scheduling mechanism would create two clocks that can drift apart.
@@ -167,9 +165,9 @@ public class SessionController {
      */
     private void submitEnforcementTask() {
         // Capture session reference — lambdas must reference effectively final vars
-        Session session = currentSession;
+        final Session session = currentSession;
 
-        Task<Void> enforcementTask = new Task<>() {
+        Task<Void> task =new Task<>() {
             @Override
             protected Void call() {
                 // This runs on a background thread — safe to do OS work here
@@ -179,14 +177,14 @@ public class SessionController {
         };
 
         // If enforcement throws (e.g. JNA error), log it — don't crash the app
-        enforcementTask.setOnFailed(e ->
+        task.setOnFailed(e ->
                 System.err.println("[SessionController] Enforcement failed: "
-                        + enforcementTask.getException().getMessage())
+                        + task.getException().getMessage())
         );
 
         // Start the task on a daemon thread.
         // Daemon threads don't prevent JVM shutdown — correct for background work.
-        Thread thread = new Thread(enforcementTask);
+        Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
     }
