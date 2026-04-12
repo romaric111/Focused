@@ -48,7 +48,7 @@ mvn javafx:run
 
 ```bash
 mvn package
-java -jar target/focused.jar
+java -jar target/focused-v1-shaded.jar
 ```
 
 ---
