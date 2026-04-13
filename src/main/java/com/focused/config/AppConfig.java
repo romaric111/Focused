@@ -21,7 +21,7 @@ public class AppConfig {
     private final Path      configPath;
     private final Properties props;
 
-    // ── Constructor
+    // Constructor
 
     public AppConfig() {
         // Resolve config file next to the running JAR (portable mode)
@@ -30,7 +30,7 @@ public class AppConfig {
         load();
     }
 
-    // ── Public
+    // Public
 
     public String get(String key, String defaultValue) {
         return props.getProperty(key, defaultValue);
@@ -53,12 +53,12 @@ public class AppConfig {
         set(key, String.valueOf(value));
     }
 
-    // ── Keys (constants so nobody typos a string) ─────────────────────────────
+    // Keys (constants so nobody typos a string)
 
     public static final String KEY_LAST_WINDOW   = "last.window";
     public static final String KEY_LAST_DURATION = "last.duration.seconds";
 
-    // ── Internal
+    // Internal
 
     private void load() {
         if (Files.exists(configPath)) {
