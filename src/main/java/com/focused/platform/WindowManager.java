@@ -31,6 +31,15 @@ public class WindowManager {
        int GetWindowLongW(HWND hwnd, int nIndex);
        int GetWindowThreadProcessId(HWND hwnd, IntByReference lpdwProcessId);
 
+            // Gets the show state of a window (minimized, maximized, normal)
+             // WINDOWPLACEMENT is a structure — we only need the showCmd field
+          // which sits at byte offset 8 (two ints before it: length and flags)
+        boolean GetWindowPlacement(HWND hwnd, int[] lpwndpl);
+
+        int SW_SHOWMINIMIZED = 2;
+        int SW_SHOWNORMAL    = 1;
+        int SW_SHOWNOACTIVATE = 4;
+
        int SW_MINIMIZE      = 6;
        int SW_RESTORE       = 9;
        int GWWL_EXSTYLE     = -20;
@@ -91,13 +100,39 @@ public class WindowManager {
     public void enforceLock(Session session) {
         for (WindowInfo w: getVisibleWindows()){
             if(session.matches(w.title())){
-                User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_RESTORE);
-                User32.INSTANCE.SetForegroundWindow(w.hwnd());
+                // Only intervene if the window got minimized
+                // If it's normal or maximized, leave it exactly as the user left it
+                if (isMinimized(w.hwnd())) {
+                    User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_RESTORE);
+                    User32.INSTANCE.SetForegroundWindow(w.hwnd());
+                }
             }else{
                 User32.INSTANCE.ShowWindow(w.hwnd(), User32.SW_MINIMIZE);
             }
         }
 
+    }
+
+   /**
+    * Returns true if the window is currently in a minimized state.
+    * GetWindowPlacement fills a WINDOWPLACEMENT structure.
+    * We pass it as a raw int array — the structure layout is:
+    *   [0] length (must be set to structure size before calling)
+    *   [1] flags
+    *   [2] showCmd  ← this is what we need
+    *   [3] ptMinPosition.x
+    *   [4] ptMinPosition.y
+    *   [5] ptMaxPosition.x
+    *   [6] ptMaxPosition.y
+    *   [7..10] rcNormalPosition (RECT — 4 ints)
+    * Win32 WINDOWPLACEMENT reference:
+    * https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-windowplacement
+    */
+    private boolean isMinimized(HWND hwnd) {
+        int[] placement = new int[11];
+        placement[0] = placement.length * 4; // set length field (bytes)
+        User32.INSTANCE.GetWindowPlacement(hwnd, placement);
+        return placement[2] == User32.SW_SHOWMINIMIZED;
     }
 
     //At the done state all windows are released
