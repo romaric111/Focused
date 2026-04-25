@@ -13,18 +13,21 @@ Focused is a Windows productivity app created for my own use. It locks your desk
 ## Architecture
 
 ```
-src/main/java/com/focused/
-├── Main.java           
-├── core/               
-│   └── Session.java    //model for a focus session
-├── controll/
-|    └── SessionController.java //controller
-├── platform/       
-│   └── WindowManager.java //model for the communication with Win32.dll API
-├── ui/                 
-│   └── MainView.java // view using JavaFX
-└── config/             
-    └── AppConfig.java // Settings
+focused/
+├── src/main/java/com/focused/
+│   ├── Main.java           Entry point
+│   ├── app/
+│   │   └── SessionController.java   Timer, threading, callbacks
+│   ├── core/
+│   │   └── Session.java             Domain model — pure logic
+│   ├── platform/
+│   │   └── WindowManager.java       All Win32/JNA code lives here
+│   ├── ui/
+│   │   └── MainView.java            JavaFX scene graph
+│   └── config/
+│       └── AppConfig.java           Settings persistence
+└── src/main/resources/
+    └── styles.css
 ```
 ---
 
