@@ -69,7 +69,7 @@ public class AppConfig {
             }
         }
     }
-
+//save a session
     private void save() {
         try (var out = Files.newOutputStream(configPath,
                 StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
